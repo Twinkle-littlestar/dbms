@@ -26,9 +26,9 @@
       if(s_marks between 990 and 1500) then
       set s_class='Distinction';
       elseif(s_marks between 990 and 989) then
-      set s_class='1st Class';
+      set s_class='First Class';
       elseif(s_marks between 825 and 899) then
-      set s_class='2nd Class';
+      set s_class='Higher Second Class';
       else
       set s_class='Pass';
       end if;
