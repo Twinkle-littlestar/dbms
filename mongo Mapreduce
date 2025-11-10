@@ -1,0 +1,64 @@
+test> use TEB68;
+switched to db TEB68
+TEB68> db.createCollection("TE");
+{ ok: 1 }
+TEB68> db.TE.insert({Rollno:1,Marks:90,Div:"A"});
+DeprecationWarning: Collection.insert() is deprecated. Use insertOne, insertMany, or
+bulkWrite.
+{
+acknowledged: true,
+insertedIds: { '0': ObjectId('68db6fe8a44bf0f612ce5f47') }
+}
+TEB68> db.TE.insert({Rollno:2,Marks:95,Div:"A"});
+{
+acknowledged: true,
+insertedIds: { '0': ObjectId('68db6ffda44bf0f612ce5f48') }
+}
+TEB68> db.TE.insert({Rollno:1,Marks:55,Div:"A"});
+{
+acknowledged: true,
+insertedIds: { '0': ObjectId('68db700da44bf0f612ce5f49') }
+}
+TEB68> db.TE.insert({Rollno:1,Marks:45,Div:"B"});
+{
+acknowledged: true,
+insertedIds: { '0': ObjectId('68db701ba44bf0f612ce5f4a') }
+}
+
+TEB68> db.TE.find();
+[ {
+_id: ObjectId('68db6fe8a44bf0f612ce5f47'),
+Rollno: 1,
+Marks: 90,
+Div: 'A'
+},
+{
+_id: ObjectId('68db6ffda44bf0f612ce5f48'),
+Rollno: 2,
+Marks: 95,
+Div: 'A'
+},
+{
+_id: ObjectId('68db700da44bf0f612ce5f49'),
+Rollno: 1,
+Marks: 55,
+Div: 'A'
+},
+{
+_id: ObjectId('68db701ba44bf0f612ce5f4a'),
+Rollno: 1,
+Marks: 45,
+Div: 'B'
+}
+]
+TEB68> db.TE.mapReduce(function(){emit(this.Rollno,this.Marks);},
+... function(key,values){return Array.sum(values)},
+... {
+... query:{Div:"A"},
+... out:"Total_Marks"
+
+... }
+... );
+{ result: 'Total_Marks', ok: 1 }
+TEB68> db.Total_Marks.find();
+[ { _id: 2, value: 95 }, { _id: 1, value:
