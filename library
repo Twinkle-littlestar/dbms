@@ -1,0 +1,90 @@
+// library
+
+mysql> use practical;
+Database changed
+mysql> create table Borrower(Rollno int primary key,Name varchar(100),DOI date,Name_of_book varchar(300),Status char(1));
+Query OK, 0 rows affected (0.21 sec)
+
+mysql> create table fine(Rollno int,sDate date,amt int);
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> insert into Borrower(Rollno,Name,DOI,Name_of_book,Status) values(1,'Jack','2025-05-21','DBMS','I'),(2,'Jelly','2025-06-15','SPM','I'),(3,'Hummpy','2025-07-13','TOC','I');
+Query OK, 3 rows affected (0.02 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> DELIMITER //
+mysql>
+mysql> CREATE PROCEDURE p_fine(IN rno INT, IN bname VARCHAR(100))
+    -> BEGIN
+    ->     DECLARE d1 DATE;
+    ->     DECLARE daycnt INT;
+    ->     DECLARE fine_amt INT;
+    ->
+    ->     SELECT DOI INTO d1
+    ->     FROM Borrower
+    ->     WHERE Rollno = rno AND Name_of_book = bname;
+    ->
+    ->     SET daycnt = DATEDIFF(NOW(), d1);
+    ->
+    ->     IF (daycnt >= 15 AND daycnt <= 30) THEN
+    ->         SET fine_amt = daycnt * 5;
+    ->         INSERT INTO fine(Rollno, sDate, amt) VALUES (rno, NOW(), fine_amt);
+    ->         UPDATE Borrower SET Status = 'R' WHERE Rollno = rno;
+    ->
+    ->     ELSEIF (daycnt > 30) THEN
+    ->         SET fine_amt = daycnt * 50;
+    ->         INSERT INTO fine(Rollno, sDate, amt) VALUES (rno, NOW(), fine_amt);
+    ->         UPDATE Borrower SET Status = 'R' WHERE Rollno = rno;
+    ->
+    ->     ELSE
+    ->         UPDATE Borrower SET Status = 'R' WHERE Rollno = rno;
+    ->     END IF;
+    -> END;
+    -> //
+Query OK, 0 rows affected (0.03 sec)
+
+mysql>
+mysql> DELIMITER ;
+mysql>
+mysql> select*from Borrower;
++--------+--------+------------+--------------+--------+
+| Rollno | Name   | DOI        | Name_of_book | Status |
++--------+--------+------------+--------------+--------+
+|      1 | Jack   | 2025-05-21 | DBMS         | I      |
+|      2 | Jelly  | 2025-06-15 | SPM          | I      |
+|      3 | Hummpy | 2025-07-13 | TOC          | I      |
++--------+--------+------------+--------------+--------+
+3 rows in set (0.01 sec)
+
+mysql> select*from fine;
+Empty set (0.00 sec)
+
+mysql> CALL p_fine(1, 'DBMS');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> select*from fine;
++--------+------------+------+
+| Rollno | sDate      | amt  |
++--------+------------+------+
+|      1 | 2025-11-10 | 8650 |
++--------+------------+------+
+1 row in set (0.00 sec)
+
+mysql> CALL p_fine(2, 'SPM');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> CALL p_fine(3, 'TOC');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select*from fine;
++--------+------------+------+
+| Rollno | sDate      | amt  |
++--------+------------+------+
+|      1 | 2025-11-10 | 8650 |
+|      2 | 2025-11-10 | 7400 |
+|      3 | 2025-11-10 | 6000 |
++--------+------------+------+
+3 rows in set (0.00 sec)
+
+mysql>
