@@ -1,0 +1,168 @@
+gescoe@gescoe-OptiPlex-3010:~$ mongosh
+Current Mongosh Log ID: 68d232fb9a8c785accce5f46
+test> use TEB68;
+switched to db TEB68
+TEB68> db.createCollection("Student");
+{ ok: 1 }
+TEB68> db.Student.insert({Name:"Urvi",Rollno:68,DOB:21-10-2005,Branch:"Computer"})
+DeprecationWarning: Collection.insert() is deprecated. Use insertOne, insertMany, or
+bulkWrite.
+{
+acknowledged: true,
+insertedIds: { '0': ObjectId('68d234929a8c785accce5f47') }
+}
+TEB68> db.Student.find()
+[
+{
+_id: ObjectId('68d234929a8c785accce5f47'),
+Name: 'Urvi',
+Rollno: 68,
+DOB: -2005,
+Branch: 'Computer'
+}
+]
+
+TEB68> db.Student.update({Name:'Urvi'},{$set:{likes:'URVI'}})
+
+DeprecationWarning: Collection.update() is deprecated. Use updateOne, updateMany, or
+bulkWrite.
+{
+acknowledged:true,
+insertedId: null,
+matchedCount: 1,
+modifiedCount: 1,
+upsertedCount: 0
+}
+TEB68> db.Student.find()
+[
+{
+_id: ObjectId('68d234929a8c785accce5f47'),
+Name: 'Urvi',
+Rollno: 68,
+DOB: -2005,
+Branch: 'Computer',
+likes: 'URVI'
+}
+]
+TEB68> db.Student.find({Name:"Urvi"});
+[
+{
+_id: ObjectId('68d234929a8c785accce5f47'),
+Name: 'Urvi',
+Rollno: 68,
+DOB: -2005,
+Branch: 'Computer',
+likes: 'URVI'
+}
+]
+
+TEB68> db.Student.deleteOne({ Name: "URVI" });
+{ acknowledged:true, deletedCount: 0 }
+TEB68> db.Student.find()
+[
+{
+_id: ObjectId('68d234929a8c785accce5f47'),
+Name: 'Urvi',
+Rollno: 68,
+DOB: -2005,
+Branch: 'Computer',
+likes: 'URVI'
+}
+]
+TEB68> db.Student.save({Name:"Riya",Rollno:70,DOB:"2005-02-
+11",Branch:"IT",likes:"Music"})
+DeprecationWarning: Collection.save() is deprecated. Use insertOne, updateOne, or
+replaceOne.
+WriteResult({ "nInserted" : 1 })
+TEB68> db.Student.find()
+[
+{
+_id: ObjectId('68d234929a8c785accce5f47'),
+Name: 'Urvi',
+Rollno: 68,
+DOB: -2005,
+Branch: 'Computer',
+likes: 'URVI'
+},
+{
+_id: ObjectId('68d236019a8c785accce5f48'),
+Name: 'Riya',
+Rollno: 70,
+DOB: '2005-02-11',
+Branch: 'IT',
+likes: 'Music'
+}
+]
+TEB68> db.Student.find({ $and: [ { Branch: "Computer" }, { Rollno: { $gt: 60 } } ] })
+[
+{
+_id: ObjectId('68d234929a8c785accce5f47'),
+Name: 'Urvi',
+Rollno: 68,
+DOB: -2005,
+
+Branch: 'Computer',
+likes: 'URVI'
+}
+]
+TEB68> db.Student.find({ $or: [ { Branch: "IT" }, { Branch: "Computer" } ] })
+[
+{
+_id: ObjectId('68d234929a8c785accce5f47'),
+Name: 'Urvi',
+Rollno: 68,
+DOB: -2005,
+Branch: 'Computer',
+likes: 'URVI'
+},
+{
+_id: ObjectId('68d236019a8c785accce5f48'),
+Name: 'Riya',
+Rollno: 70,
+DOB: '2005-02-11',
+Branch: 'IT',
+likes: 'Music'
+}
+]
+TEB68> db.Student.find().pretty()
+[
+{
+_id: ObjectId('68d234929a8c785accce5f47'),
+Name: 'Urvi',
+Rollno: 68,
+DOB: -2005,
+Branch: 'Computer',
+likes: 'URVI'
+},
+{
+_id: ObjectId('68d236019a8c785accce5f48'),
+Name: 'Riya',
+Rollno: 70,
+DOB: '2005-02-11',
+Branch: 'IT',
+likes: 'Music'
+}
+]
+TEB68> db.Student.find({ Marks: { $gte: 60, $lte: 90 } }) { "_id": ObjectId("..."), "RollNo":
+1, "Name": "Sachin", "City":
+"Nashik", "Marks": 90, "Pincode": 422005 }
+{ "_id": ObjectId("..."), "RollNo": 2, "Name": "Ravi", "City": "Pune",
+"Marks": 70 }
+{ "_id": ObjectId("..."), "RollNo": 4, "Name": "Vedika", "City":
+"Nashik", "Marks": 60, "Pincode": 422005 }
+{ "_id": ObjectId("..."), "RollNo": 5, "Name": "Akash", "City": "Mumbai", "Marks": 75 }
+
+TEB68> db.Student.find({ City: { $ne: "Pune" } })
+{ "_id": ObjectId("..."), "RollNo": 1, "Name": "Sachin", "City": "Nashik", "Marks": 90, "Pincode":
+422005 }
+{ "_id": ObjectId("..."), "RollNo": 4, "Name": "Vedika", "City":
+"Nashik", "Marks": 60, "Pincode": 422005 }
+{ "_id": ObjectId("..."), "RollNo": 5, "Name": "Akash", "City": "Mumbai", "Marks": 75 }
+TEB68> db.Student.find({ $or: [ { Name: "Ravi" }, { Marks: { $gt: 80 } }
+] })
+{ "_id": ObjectId("..."), "RollNo": 1, "Name": "Sachin", "City":
+"Nashik", "Marks": 90, "Pincode": 422005 }
+{ "_id": ObjectId("..."), "RollNo": 2, "Name": "Ravi", "City": "Pune", "Marks": 70 }
+TEB68> db.Student.find({ Name: /^V/ })
+{ "_id": ObjectId("..."), "RollNo": 4, "Name": "Vedika", "City":
+"Nashik", "Marks": 60, "Pincode": 422005 }
