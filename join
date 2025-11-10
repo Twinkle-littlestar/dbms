@@ -1,0 +1,234 @@
+//join
+mysql> use practical;
+Database changed
+mysql> create table Student_Marks(Rollno int primary key,Name varchar(30),Marks int(10),Branch varchar(20));
+Query OK, 0 rows affected, 1 warning (0.05 sec)
+
+mysql> insert into Student_Marks(Rollno, Name,Marks,Branch) values(1,'Ravi',90,'Computer'),(2,'Vedika',70,'Computer'),(3,'Aarush',95,'IT'),(4,'Jyoti',60,'IT');
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> desc Student_Marks;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| Rollno | int         | NO   | PRI | NULL    |       |
+| Name   | varchar(30) | YES  |     | NULL    |       |
+| Marks  | int         | YES  |     | NULL    |       |
+| Branch | varchar(20) | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> select*from Student_Marks;
++--------+--------+-------+----------+
+| Rollno | Name   | Marks | Branch   |
++--------+--------+-------+----------+
+|      1 | Ravi   |    90 | Computer |
+|      2 | Vedika |    70 | Computer |
+|      3 | Aarush |    95 | IT       |
+|      4 | Jyoti  |    60 | IT       |
++--------+--------+-------+----------+
+4 rows in set (0.00 sec)
+
+mysql> select*from Student_Marks where Marks>70;
++--------+--------+-------+----------+
+| Rollno | Name   | Marks | Branch   |
++--------+--------+-------+----------+
+|      1 | Ravi   |    90 | Computer |
+|      3 | Aarush |    95 | IT       |
++--------+--------+-------+----------+
+2 rows in set (0.00 sec)
+
+mysql> select*from Student_Marks where Marks<70;
++--------+-------+-------+--------+
+| Rollno | Name  | Marks | Branch |
++--------+-------+-------+--------+
+|      4 | Jyoti |    60 | IT     |
++--------+-------+-------+--------+
+1 row in set (0.00 sec)
+
+mysql> select*from Student_Marks
+    -> where Marks=70
+    -> and Name='Vedika';
++--------+--------+-------+----------+
+| Rollno | Name   | Marks | Branch   |
++--------+--------+-------+----------+
+|      2 | Vedika |    70 | Computer |
++--------+--------+-------+----------+
+1 row in set (0.00 sec)
+
+mysql> update Student_Marks set Name='Sachin' where Name='Ravi';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> delete from Student_Marks where Name='Aarush';
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select max(Marks) from Student_Marks;
++------------+
+| max(Marks) |
++------------+
+|         90 |
++------------+
+1 row in set (0.01 sec)
+
+mysql> select*from Student_Marks;
++--------+--------+-------+----------+
+| Rollno | Name   | Marks | Branch   |
++--------+--------+-------+----------+
+|      1 | Sachin |    90 | Computer |
+|      2 | Vedika |    70 | Computer |
+|      4 | Jyoti  |    60 | IT       |
++--------+--------+-------+----------+
+3 rows in set (0.00 sec)
+
+mysql> select min(Marks) from Student_Marks;
++------------+
+| min(Marks) |
++------------+
+|         60 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select avg(Marks) from Student_Marks;
++------------+
+| avg(Marks) |
++------------+
+|    73.3333 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select sum(Marks) from Student_Marks;
++------------+
+| sum(Marks) |
++------------+
+|        220 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select count(Rollno) from Student_Marks;
++---------------+
+| count(Rollno) |
++---------------+
+|             3 |
++---------------+
+1 row in set (0.01 sec)
+
+mysql> select Branch,count(Rollno) from Student_Marks group by Branch;
++----------+---------------+
+| Branch   | count(Rollno) |
++----------+---------------+
+| Computer |             2 |
+| IT       |             1 |
++----------+---------------+
+2 rows in set (0.00 sec)
+
+mysql> create table Student_info(Rollno int primary key,Name varchar(20),Address varchar(50));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> insert into Student_info(Rollno,Name,Address) values(1,'Ravi','Nashik'),(2,'Vedika','Nashik'),(5,'Tushar','Pune'),(6,'Varsha','Mumbai');
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> select*from Student_info;
++--------+--------+---------+
+| Rollno | Name   | Address |
++--------+--------+---------+
+|      1 | Ravi   | Nashik  |
+|      2 | Vedika | Nashik  |
+|      5 | Tushar | Pune    |
+|      6 | Varsha | Mumbai  |
++--------+--------+---------+
+4 rows in set (0.00 sec)
+
+mysql> select Student_Marks.Rollno,Student_Marks.Marks,Student_info.Address
+    -> from Student_Marks inner join Student_info
+    -> On Student_Marks.Rollno=Student_info.Rollno;
++--------+-------+---------+
+| Rollno | Marks | Address |
++--------+-------+---------+
+|      1 |    90 | Nashik  |
+|      2 |    70 | Nashik  |
++--------+-------+---------+
+2 rows in set (0.01 sec)
+
+mysql> select Student_Marks.Rollno,Student_Marks.Marks,Student_info.Address
+    -> from Student_info right join Student_Marks
+    -> on Student_info.Rollno=Student_Marks.Rollno;
++--------+-------+---------+
+| Rollno | Marks | Address |
++--------+-------+---------+
+|      1 |    90 | Nashik  |
+|      2 |    70 | Nashik  |
+|      4 |    60 | NULL    |
++--------+-------+---------+
+3 rows in set (0.00 sec)
+
+mysql> select Student_Marks.Rollno,Student_Marks.Marks,Student_info.Address
+    -> from Student_info left join Student_Marks
+    -> on Student_info.Rollno=Student_Marks.Rollno;
++--------+-------+---------+
+| Rollno | Marks | Address |
++--------+-------+---------+
+|      1 |    90 | Nashik  |
+|      2 |    70 | Nashik  |
+|   NULL |  NULL | Pune    |
+|   NULL |  NULL | Mumbai  |
++--------+-------+---------+
+4 rows in set (0.00 sec)
+
+mysql> select Student_Marks.Rollno,Student_Marks.Marks,Student_info.Address
+    -> from Student_info left join Student_Marks
+    -> on Student_Marks.Rollno=Student_info.Rollno;
++--------+-------+---------+
+| Rollno | Marks | Address |
++--------+-------+---------+
+|      1 |    90 | Nashik  |
+|      2 |    70 | Nashik  |
+|   NULL |  NULL | Pune    |
+|   NULL |  NULL | Mumbai  |
++--------+-------+---------+
+4 rows in set (0.00 sec)
+
+mysql> select Student_info.Rollno,Student_info.Name,Student_Marks.Marks,Student_info.Address
+    -> from Student_info left join Student_Marks
+    -> on Student_Marks.Rollno=Student_info.Rollno;
++--------+--------+-------+---------+
+| Rollno | Name   | Marks | Address |
++--------+--------+-------+---------+
+|      1 | Ravi   |    90 | Nashik  |
+|      2 | Vedika |    70 | Nashik  |
+|      5 | Tushar |  NULL | Pune    |
+|      6 | Varsha |  NULL | Mumbai  |
++--------+--------+-------+---------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT Student_Marks.Rollno,
+    ->        Student_Marks.Name,
+    ->        Student_Marks.Marks,
+    ->        Student_Marks.Branch,
+    ->        Student_info.Address
+    -> FROM Student_Marks
+    -> LEFT JOIN Student_info ON Student_Marks.Rollno = Student_info.Rollno
+    ->
+    -> UNION
+    ->
+    -> SELECT Student_Marks.Rollno,
+    ->        Student_Marks.Name,
+    ->        Student_Marks.Marks,
+    ->        Student_Marks.Branch,
+    ->        Student_info.Address
+    -> FROM Student_Marks
+    -> RIGHT JOIN Student_info ON Student_Marks.Rollno = Student_info.Rollno;
++--------+--------+-------+----------+---------+
+| Rollno | Name   | Marks | Branch   | Address |
++--------+--------+-------+----------+---------+
+|      1 | Sachin |    90 | Computer | Nashik  |
+|      2 | Vedika |    70 | Computer | Nashik  |
+|      4 | Jyoti  |    60 | IT       | NULL    |
+|   NULL | NULL   |  NULL | NULL     | Pune    |
+|   NULL | NULL   |  NULL | NULL     | Mumbai  |
++--------+--------+-------+----------+---------+
+5 rows in set (0.01 sec)
+
+mysql>
