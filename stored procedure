@@ -1,0 +1,130 @@
+//stored procedure
+
+ delimiter //
+ create procedure proc_Grade()
+     begin
+      declare done int default 0;
+    
+      declare s_marks int;
+      declare s_rollno int;
+      declare s_name varchar(30);
+      declare s_class varchar(100);
+
+      declare s_student cursor for
+      select Rollno, Name, total_marks from Stud_Marks;
+    
+      declare continue handler for not found set done=1;
+    
+      open s_student;
+    
+      read_loop:LOOP
+      fetch s_student into s_rollno,s_name,s_marks;
+    
+      if done=1 then
+      leave read_loop;
+      end if;
+      if(s_marks between 990 and 1500) then
+      set s_class='Distinction';
+      elseif(s_marks between 990 and 989) then
+      set s_class='1st Class';
+      elseif(s_marks between 825 and 899) then
+      set s_class='2nd Class';
+      else
+      set s_class='Pass';
+      end if;
+    
+      insert into Result(Rollno,Name,Class) values(s_rollno,s_name,s_class);
+      END LOOP;
+    
+      CLOSE s_student;
+     END ;
+
+
+mysql> CREATE TABLE Stud_Marks (
+    ->     Rollno INT PRIMARY KEY,
+    ->     Name VARCHAR(30),
+    ->     total_marks INT
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> CREATE TABLE Result (
+    ->     Rollno INT,
+    ->     Name VARCHAR(30),
+    ->     Class VARCHAR(100));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> INSERT INTO Stud_Marks VALUES
+    -> (1, 'Kalyani', 716),
+    -> (2, 'Urvi', 456),
+    -> (3, 'Janhavi', 500),
+    -> (4, 'Chitra', 600),
+    -> (5, 'Eva', 1500),
+    -> (6, 'Ravi', 990),
+    -> (7, 'Ram', 989);
+Query OK, 7 rows affected (0.01 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+mysql> DELIMITER //
+mysql>
+mysql> CREATE PROCEDURE proc_Grade()
+    -> BEGIN
+    ->     DECLARE done INT DEFAULT 0;
+    ->     DECLARE s_marks INT;
+    ->     DECLARE s_rollno INT;
+    ->     DECLARE s_name VARCHAR(30);
+    ->     DECLARE s_class VARCHAR(100);
+    ->
+    ->  DECLARE s_student CURSOR FOR
+    ->         SELECT Rollno, Name, total_marks FROM Stud_Marks;
+    ->
+    ->     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    ->     OPEN s_student;
+    ->
+    ->     read_loop: LOOP
+    ->         FETCH s_student INTO s_rollno, s_name, s_marks;
+    ->
+    ->         IF done = 1 THEN
+    ->             LEAVE read_loop;
+    ->         END IF;
+    ->
+    ->         IF (s_marks BETWEEN 990 AND 1500) THEN
+    ->             SET s_class = 'Distinction';
+    ->         ELSEIF (s_marks BETWEEN 900 AND 989) THEN
+    ->             SET s_class = 'First Class';
+    ->         ELSEIF (s_marks BETWEEN 825 AND 899) THEN
+    ->             SET s_class = 'Higher Second Class';
+    ->         ELSE
+    ->             SET s_class = 'Pass';
+    ->         END IF;
+    ->
+    ->         INSERT INTO Result (Rollno, Name, Class)
+    ->         VALUES (s_rollno, s_name, s_class);
+    ->     END LOOP;
+    ->
+    ->     CLOSE s_student;
+    -> END;
+    -> //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>
+mysql> DELIMITER ;
+mysql> CALL proc_Grade();
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> select*from Result;
++--------+---------+-------------+
+| Rollno | Name    | Class       |
++--------+---------+-------------+
+|      1 | Kalyani | Pass        |
+|      2 | Urvi    | Pass        |
+|      3 | Janhavi | Pass        |
+|      4 | Chitra  | Pass        |
+|      5 | Eva     | Distinction |
+|      6 | Ravi    | Distinction |
+|      7 | Ram     | First Class |
++--------+---------+-------------+
+7 rows in set (0.00 sec)
+
+mysql>
+    
