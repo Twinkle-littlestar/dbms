@@ -1,0 +1,176 @@
+gescoe@gescoe-OptiPlex-3010:~$ mongosh
+Current Mongosh Log ID: 68d23b0a37dc1f082bce5f46
+test> use TEB68;
+switched to db TEB68
+TEB68> db.STUD.insert({Rollno:68,Name:'Urvi',Marks:90,Branch:'Computer'});
+DeprecationWarning: Collection.insert() is deprecated. Use insertOne, insertMany, or
+bulkWrite.
+{
+acknowledged: true,
+insertedIds: { '0': ObjectId('68d23e0b37dc1f082bce5f47') }
+}
+
+TEB68>
+db.STUD.insert([{Rollno:67,Name:'Diya',Marks:93,Branch:'Computer'},{Rollno:66,Name:'Adit
+i',Marks:95,Branch:'IT'},{Rollno:65,Name:'riya',Marks:70,Branch:'IT'}]);
+{
+acknowledged:true,
+insertedIds: {
+'0': ObjectId('68d23ef437dc1f082bce5f48'),
+'1': ObjectId('68d23ef437dc1f082bce5f49'),
+'2': ObjectId('68d23ef437dc1f082bce5f4a')
+}
+}
+TEB68> db.STUD.find();
+[
+{
+
+_id: ObjectId('68d23e0b37dc1f082bce5f47'),
+Rollno: 68,
+Name: 'Urvi',
+Marks: 90,
+Branch: 'Computer'
+},
+{
+_id: ObjectId('68d23ef437dc1f082bce5f48'),
+Rollno: 67,
+Name: 'Diya',
+Marks: 93,
+Branch: 'Computer'
+},
+{
+_id: ObjectId('68d23ef437dc1f082bce5f49'),
+Rollno: 66,
+Name: 'Aditi',
+Marks: 95,
+Branch: 'IT'
+},
+{
+_id: ObjectId('68d23ef437dc1f082bce5f4a'),
+Rollno: 65,
+Name: 'riya',
+Marks: 70,
+Branch: 'IT'
+}
+]
+TEB68> db.STUD.aggregate([{$group: {_id : "$Branch", Total_Marks: {$sum:"$Marks"}}}])
+[
+{ _id: 'IT', Total_Marks: 165 },
+
+{ _id: 'Computer', Total_Marks: 183 }
+]
+TEB6> db.STUD.aggregate([{$group: {_id : "$Branch", Min_marks: {$min :"$Marks"}}}])
+[ { _id: 'Computer', Min_marks: 90 }, { _id: 'IT', Min_marks: 70 } ]
+TEB6> db.STUD.aggregate([{$group: {_id : "$Branch", Max_marks: {$max :"$Marks"}}}])
+[ { _id: 'IT', Max_marks: 95 }, { _id: 'Computer', Max_marks: 93 } ]
+TEB6> db.STUD.aggregate([{$group: {_id : "$Branch", Avg_marks: {$avg :"$Marks"}}}])
+[
+{ _id: 'Computer', Avg_marks: 91.5 },
+{ _id: 'IT', Avg_marks: 82.5 }
+]
+TEB68> db.STUD.find().pretty()
+[
+{
+_id: ObjectId('68d23e0b37dc1f082bce5f47'),
+Rollno: 68,
+Name: 'Akanksha',
+Marks: 90,
+Branch: 'Computer'
+},
+{
+_id: ObjectId('68d23ef437dc1f082bce5f48'),
+Rollno: 67,
+Name: 'Diya',
+Marks: 93,
+Branch: 'Computer'
+},
+{
+_id: ObjectId('68d23ef437dc1f082bce5f49'),
+Rollno: 66,
+Name: 'Aditi',
+
+Marks: 95,
+Branch: 'IT'
+},
+{
+_id: ObjectId('68d23ef437dc1f082bce5f4a'),
+Rollno: 65,
+Name: 'riya',
+Marks: 70,
+Branch: 'IT'
+}
+]
+TEB68> db.STUD.insert({_id:1002,Rollno:02,Name:'AAA',Marks:30,Branch:'Computer'});
+{ acknowledged: true, insertedIds: { '0': 1002 } }
+TEB68> db.STUD.find();
+[
+{
+_id: ObjectId('68d23e0b37dc1f082bce5f47'),
+Rollno: 68,
+Name: 'Urvi',
+Marks: 90,
+Branch: 'Computer'
+},
+{
+_id: ObjectId('68d23ef437dc1f082bce5f48'),
+Rollno: 67,
+Name: 'Diya',
+Marks: 93,
+Branch: 'Computer'
+},
+{
+_id: ObjectId('68d23ef437dc1f082bce5f49'),
+
+Rollno: 66,
+Name: 'Aditi',
+Marks: 95,
+Branch: 'IT'
+},
+{
+_id: ObjectId('68d23ef437dc1f082bce5f4a'),
+Rollno: 65,
+Name: 'riya',
+Marks: 70,
+Branch: 'IT'
+},
+{ _id: 1002, Rollno: 2, Name: 'AAA', Marks: 30, Branch: 'Computer' }
+]
+TEB68> db.STUD.createIndex({Rollno: 1});
+Rollno_1
+
+TEB68> db.STUD.createIndex({Name: 1});
+Name_1
+
+TEB68> db.STUD.createIndex({Branch: 1, Marks: -1});
+Branch_1_Marks_-1
+
+TEB68> db.STUD.getIndexes()
+[
+{
+v: 2,
+key: { _id: 1 },
+name: '_id_'
+},
+{
+
+v: 2,
+key: { Rollno: 1 },
+name: 'Rollno_1'
+},
+{
+v: 2,
+key: { Name: 1 },
+name: 'Name_1'
+},
+{
+v: 2,
+key: { Branch: 1, Marks: -1 },
+name: 'Branch_1_Marks_-1'
+}
+]
+TEB68> db.student.createIndex({ Marks: 1 })
+{ "createdCollectionAutomatically": false, "numIndexesBefore": 1,
+"numIndexesAfter": 2, "ok": 1 }
+TEB68> db.student.createIndex({ Branch: 1, Marks: -1 })
+{ "createdCollectionAutomatically": false, "numIndexesBefore": 2,
+"numIndexesAfter": 3, "ok": 1 }
