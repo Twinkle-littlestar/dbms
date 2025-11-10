@@ -1,0 +1,96 @@
+//CURSOR
+
+mysql> use practical
+Database changed
+mysql> create table if not exists o_rollcall(
+    -> rollno int primary key,
+    -> name varchar(50)
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> create table if not exists n_rollcall(
+    -> rollno int primary key,
+    -> name varchar(50)
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+mysql> insert into o_rollcall(rollno,name)values
+    -> (1,'kalyani'),
+    -> (2,'urvi'),
+    -> (3,'janhavi'),
+    -> (4,'Nakshatra');
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> insert into n_rollcall(rollno,name)values
+    -> (2,'urvi');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select*from o_rollcall;
++--------+-----------+
+| rollno | name      |
++--------+-----------+
+|      1 | kalyani   |
+|      2 | urvi      |
+|      3 | janhavi   |
+|      4 | Nakshatra |
++--------+-----------+
+4 rows in set (0.00 sec)
+
+mysql> select*from n_rollcall;
++--------+------+
+| rollno | name |
++--------+------+
+|      2 | urvi |
++--------+------+
+1 row in set (0.00 sec)
+mysql>
+mysql> DELIMITER //
+mysql>
+mysql> CREATE PROCEDURE mycursor1()
+    -> BEGIN
+    ->     DECLARE done INT DEFAULT 0;
+    ->     DECLARE c_rollno INT;
+    ->     DECLARE c_name CHAR(20);
+    ->
+    ->     DECLARE c_studentN CURSOR FOR
+    ->         SELECT rollno, name
+    ->         FROM o_rollcall
+    ->         WHERE rollno NOT IN (SELECT rollno FROM n_rollcall);
+    ->
+    ->     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    ->     OPEN c_studentN;
+    ->
+    ->     read_loop: LOOP
+    ->         FETCH c_studentN INTO c_rollno, c_name;
+    ->
+    ->         IF done = 1 THEN
+    ->             LEAVE read_loop;
+    ->         END IF;
+    ->
+    ->         INSERT INTO n_rollcall (rollno, name)
+    ->         VALUES (c_rollno, c_name);
+    ->     END LOOP;
+    ->
+    ->     CLOSE c_studentN;
+    -> END;
+    -> //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>
+mysql> DELIMITER ;
+mysql> call mycursor1();
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> select*from n_rollcall;
++--------+-----------+
+| rollno | name      |
++--------+-----------+
+|      1 | kalyani   |
+|      2 | urvi      |
+|      3 | janhavi   |
+|      4 | Nakshatra |
++--------+-----------+
+4 rows in set (0.00 sec)
+
+mysql>
