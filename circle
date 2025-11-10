@@ -1,0 +1,211 @@
+//circle
+
+drop procedure circle;
+
+delimiter //
+
+create procedure circle()
+begin 
+ declare radius int;
+ declare diameter int;
+ declare area float;
+ declare circumference float;
+ declare pi float default 3.14;
+ 
+ set radius:=5;
+ 
+ cloop:LOOP
+
+  set diameter:=2*radius;
+  set area:=pi*radius*radius;
+  set circumference:=2*pi*radius;
+  
+  select radius,diameter,area,circumference;
+  set radius:=radius+1;
+  if radius>9 then 
+    leave cloop;
+ end if;
+ select radius;
+ select circumference;
+ select diameter;
+ insert into circle(radius,area,diameter,circumference) values(radius,area,diameter,circumference);
+END LOOP cloop;
+end;
+
+//delimiter ;
+
+
+mysql> create table circle (radius int,area float,diameter int,circumference float);
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> drop procedure circle;
+ERROR 1305 (42000): PROCEDURE practical.circle does not exist
+mysql>
+mysql> delimiter //
+mysql>
+mysql> create procedure circle()
+    -> begin
+    ->  declare radius int;
+    ->  declare diameter int;
+    ->  declare area float;
+    ->  declare circumference float;
+    ->  declare pi float default 3.14;
+    ->
+    ->  set radius:=5;
+    ->
+    ->  cloop:LOOP
+    ->
+    ->   set diameter:=2*radius;
+    ->   set area:=pi*radius*radius;
+    ->   set circumference:=2*pi*radius;
+    ->
+    ->   select radius,diameter,area,circumference;
+    ->   set radius:=radius+1;
+    ->   if radius>9 then
+    ->     leave cloop;
+    ->  end if;
+    ->  select radius;
+    ->  select circumference;
+    ->  select diameter;
+    ->  insert into circle(radius,area,diameter,circumference) values(radius,area,diameter,circumference);
+    -> END LOOP cloop;
+    -> end;
+    ->
+    -> //delimiter ;
+Query OK, 0 rows affected (0.01 sec)
+
+    -> //
+mysql> call circle();
++--------+----------+------+---------------+
+| radius | diameter | area | circumference |
++--------+----------+------+---------------+
+|      5 |       10 | 78.5 |          31.4 |
++--------+----------+------+---------------+
+1 row in set (0.01 sec)
+
++--------+
+| radius |
++--------+
+|      6 |
++--------+
+1 row in set (0.01 sec)
+
++---------------+
+| circumference |
++---------------+
+|          31.4 |
++---------------+
+1 row in set (0.02 sec)
+
++----------+
+| diameter |
++----------+
+|       10 |
++----------+
+1 row in set (0.02 sec)
+
++--------+----------+--------+---------------+
+| radius | diameter | area   | circumference |
++--------+----------+--------+---------------+
+|      6 |       12 | 113.04 |         37.68 |
++--------+----------+--------+---------------+
+1 row in set (0.02 sec)
+
++--------+
+| radius |
++--------+
+|      7 |
++--------+
+1 row in set (0.02 sec)
+
++---------------+
+| circumference |
++---------------+
+|         37.68 |
++---------------+
+1 row in set (0.02 sec)
+
++----------+
+| diameter |
++----------+
+|       12 |
++----------+
+1 row in set (0.02 sec)
+
++--------+----------+--------+---------------+
+| radius | diameter | area   | circumference |
++--------+----------+--------+---------------+
+|      7 |       14 | 153.86 |         43.96 |
++--------+----------+--------+---------------+
+1 row in set (0.03 sec)
+
++--------+
+| radius |
++--------+
+|      8 |
++--------+
+1 row in set (0.03 sec)
+
++---------------+
+| circumference |
++---------------+
+|         43.96 |
++---------------+
+1 row in set (0.03 sec)
+
++----------+
+| diameter |
++----------+
+|       14 |
++----------+
+1 row in set (0.03 sec)
+
++--------+----------+--------+---------------+
+| radius | diameter | area   | circumference |
++--------+----------+--------+---------------+
+|      8 |       16 | 200.96 |         50.24 |
++--------+----------+--------+---------------+
+1 row in set (0.03 sec)
+
++--------+
+| radius |
++--------+
+|      9 |
++--------+
+1 row in set (0.04 sec)
+
++---------------+
+| circumference |
++---------------+
+|         50.24 |
++---------------+
+1 row in set (0.04 sec)
+
++----------+
+| diameter |
++----------+
+|       16 |
++----------+
+1 row in set (0.04 sec)
+
++--------+----------+--------+---------------+
+| radius | diameter | area   | circumference |
++--------+----------+--------+---------------+
+|      9 |       18 | 254.34 |         56.52 |
++--------+----------+--------+---------------+
+1 row in set (0.04 sec)
+
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> select*from circle;
++--------+--------+----------+---------------+
+| radius | area   | diameter | circumference |
++--------+--------+----------+---------------+
+|      6 |   78.5 |       10 |          31.4 |
+|      7 | 113.04 |       12 |         37.68 |
+|      8 | 153.86 |       14 |         43.96 |
+|      9 | 200.96 |       16 |         50.24 |
++--------+--------+----------+---------------+
+4 rows in set (0.00 sec)
+
+mysql>
