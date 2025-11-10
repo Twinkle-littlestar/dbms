@@ -1,0 +1,192 @@
+//Customer-Loan
+mysql> create database practical;
+Query OK, 1 row affected (0.06 sec)
+
+mysql> use practical;
+Database changed
+mysql> create table Loan(Loan_no int(10), Name varchar(30), Loan_Amount int(10));
+Query OK, 0 rows affected, 2 warnings (0.12 sec)
+
+mysql> show table;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> show tables;
++---------------------+
+| Tables_in_practical |
++---------------------+
+| loan                |
++---------------------+
+1 row in set (0.06 sec)
+
+mysql> desc loan;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| Loan_no     | int         | YES  |     | NULL    |       |
+| Name        | varchar(30) | YES  |     | NULL    |       |
+| Loan_Amount | int         | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+3 rows in set (0.04 sec)
+
+mysql> insert into Loan(Loan_no,Name,Loan_Amount) values(1,'Ram',10000),(2,'Ravi',50000),(3,'Deepak',40000);
+Query OK, 3 rows affected (0.03 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> desc loan;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| Loan_no     | int         | YES  |     | NULL    |       |
+| Name        | varchar(30) | YES  |     | NULL    |       |
+| Loan_Amount | int         | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> select*from Loan;
++---------+--------+-------------+
+| Loan_no | Name   | Loan_Amount |
++---------+--------+-------------+
+|       1 | Ram    |       10000 |
+|       2 | Ravi   |       50000 |
+|       3 | Deepak |       40000 |
++---------+--------+-------------+
+3 rows in set (0.00 sec)
+
+mysql> create table Customer(Account_no int(10),Name varchar(10),Balance int(10),City varchar(10));
+Query OK, 0 rows affected, 2 warnings (0.06 sec)
+
+mysql> insert into Customer(Account_no,Name,Balance,City) values(1,'Ram',10000,'Pune'),(2,'Ravi',25000,'Nashik'),(4,'Sachin',30000,'Mumbai');
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> (select Name from Customer) union( select Name from Loan);
++--------+
+| Name   |
++--------+
+| Ram    |
+| Ravi   |
+| Sachin |
+| Deepak |
++--------+
+4 rows in set (0.00 sec)
+
+mysql> select Name from Customer where Name in (select Name from Loan);
++------+
+| Name |
++------+
+| Ram  |
+| Ravi |
++------+
+2 rows in set (0.01 sec)
+
+mysql> select Name from Customer where not in (select Name from Loan);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'in (select Name from Loan)' at line 1
+mysql> select Name from Customer where Name not in (select Name from Loan);
++--------+
+| Name   |
++--------+
+| Sachin |
++--------+
+1 row in set (0.01 sec)
+
+mysql> create view greater_than_20k
+    -> select*from Customer
+    -> where Balance>20000;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'select*from Customer
+where Balance>20000' at line 2
+mysql> create view greater_than_20k as
+    -> select*from Customer
+    -> where Balance>20000;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> select*from greater_than_20k;
++------------+--------+---------+--------+
+| Account_no | Name   | Balance | City   |
++------------+--------+---------+--------+
+|          2 | Ravi   |   25000 | Nashik |
+|          4 | Sachin |   30000 | Mumbai |
++------------+--------+---------+--------+
+2 rows in set (0.01 sec)
+
+mysql> create view city_bal as
+    -> select*from Customer
+    -> where city='Nashik';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select*from city_bal;
++------------+------+---------+--------+
+| Account_no | Name | Balance | City   |
++------------+------+---------+--------+
+|          2 | Ravi |   25000 | Nashik |
++------------+------+---------+--------+
+1 row in set (0.00 sec)
+
+mysql> create index myindex on Customer(Name);
+Query OK, 0 rows affected (0.15 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> show index from Customer;
++----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+| Table    | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment | Visible | Expression |
++----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+| customer |          1 | myindex  |            1 | Name        | A         |           3 |     NULL |   NULL | YES  | BTREE      |         |               | YES     | NULL       |
++----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+1 row in set (0.03 sec)
+
+mysql> create index myindex1 on Customer(Account_no,Name);
+Query OK, 0 rows affected (0.07 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> show index from Customer;
++----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+| Table    | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment | Visible | Expression |
++----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+| customer |          1 | myindex  |            1 | Name        | A         |           3 |     NULL |   NULL | YES  | BTREE      |         |               | YES     | NULL       |
+| customer |          1 | myindex1 |            1 | Account_no  | A         |           3 |     NULL |   NULL | YES  | BTREE      |         |               | YES     | NULL       |
+| customer |          1 | myindex1 |            2 | Name        | A         |           3 |     NULL |   NULL | YES  | BTREE      |         |               | YES     | NULL       |
++----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+3 rows in set (0.01 sec)
+
+mysql> select*from Customer
+    -> order by Balance desc;
++------------+--------+---------+--------+
+| Account_no | Name   | Balance | City   |
++------------+--------+---------+--------+
+|          4 | Sachin |   30000 | Mumbai |
+|          2 | Ravi   |   25000 | Nashik |
+|          1 | Ram    |   10000 | Pune   |
++------------+--------+---------+--------+
+3 rows in set (0.00 sec)
+
+mysql> select*from Customer
+    -> order by Balance asc;
++------------+--------+---------+--------+
+| Account_no | Name   | Balance | City   |
++------------+--------+---------+--------+
+|          1 | Ram    |   10000 | Pune   |
+|          2 | Ravi   |   25000 | Nashik |
+|          4 | Sachin |   30000 | Mumbai |
++------------+--------+---------+--------+
+3 rows in set (0.00 sec)
+
+mysql> select*from Loan
+    -> order by Loan_Amount desc;
++---------+--------+-------------+
+| Loan_no | Name   | Loan_Amount |
++---------+--------+-------------+
+|       2 | Ravi   |       50000 |
+|       3 | Deepak |       40000 |
+|       1 | Ram    |       10000 |
++---------+--------+-------------+
+3 rows in set (0.00 sec)
+
+mysql> select Loan_no,Name,Loan_Amount,Loan_Amount*0.08*20 as Interest from Loan;
++---------+--------+-------------+----------+
+| Loan_no | Name   | Loan_Amount | Interest |
++---------+--------+-------------+----------+
+|       1 | Ram    |       10000 | 16000.00 |
+|       2 | Ravi   |       50000 | 80000.00 |
+|       3 | Deepak |       40000 | 64000.00 |
++---------+--------+-------------+----------+
+3 rows in set (0.00 sec)
+
+mysql>
